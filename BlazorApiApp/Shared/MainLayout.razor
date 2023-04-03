@@ -1,0 +1,36 @@
+﻿@inherits LayoutComponentBase
+
+
+<PageTitle>BlazorApiApp</PageTitle>
+
+<div class="page">
+    <div class="sidebar">
+        <NavMenu />
+    </div>
+
+    <main>
+        <div class="top-row px-4">
+            <AuthorizeView>
+                <Authorized>
+                    Hello @context.User.Identity.Name
+                    <a href="/logout" class="ml-md-auto">Logout</a>
+
+                </Authorized>
+                <NotAuthorized>
+                    <a href="/login" class="ml-md-auto">Login</a>
+
+                    <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
+
+                </NotAuthorized>
+            </AuthorizeView>
+
+        </div>
+
+        
+
+        <article class="content px-4">
+            @Body
+        </article>
+    </main>
+</div>
+

@@ -1,0 +1,77 @@
+﻿@page "/student"
+@page "/student/{id:int}"
+@using WebTestApi.Shared.Models;
+@inject IStudentService StudentService
+@inject NavigationManager NavigationManager
+<h3>Student</h3>
+
+<EditForm Model="student" OnValidSubmit="HandleSubmit">
+	<DataAnnotationsValidator></DataAnnotationsValidator>
+	<ValidationSummary></ValidationSummary>
+	@if(Id != null)
+	{
+		<div class="input-group mb-3">
+			<label>@Id</label>
+		</div>
+	}
+	else
+	{
+		<div>Enter new Student</div>
+	}
+	<div>
+	<span>Student Name</span>
+		<InputText id="username" class="form-control" @bind-Value="student.Name"></InputText>
+
+	</div>
+	<div>
+		<span>Phone Number</span>
+		<InputText id="phone" class="form-control" @bind-Value="student.Phone"></InputText>
+
+	</div>
+	<div>
+		<span>Email</span>
+		<InputText id="email" class="form-control" @bind-Value="student.Email"></InputText>
+
+	</div>
+	<div>
+		<span>GPA</span>
+			<InputNumber id="gpa" class="form-control" @bind-Value="student.GPA"></InputNumber>
+	</div>
+	<div>
+		<button class="btn btn-primary">Submit</button>
+	</div>
+</EditForm>
+
+
+@code {
+	[Parameter]
+	public int? Id { get; set; }
+	WebTestApi.Shared.Models.Student? student = new WebTestApi.Shared.Models.Student();
+	protected override async Task OnParametersSetAsync()
+	{
+		if(Id != null)
+		{
+			var result = await StudentService.GetStudentById((int)Id);
+			if (result != null)
+			{
+				student = result;
+			}
+			else NavigationManager.NavigateTo("/students");
+		}
+
+	}
+	async Task HandleSubmit()
+	{
+		if (Id != null)
+		{
+			await StudentService.UpdateStudent((int)Id,student);
+			NavigationManager.NavigateTo("/students");
+		}
+		else
+		{
+			await StudentService.CreateStudent(student);
+			NavigationManager.NavigateTo("/students");
+		}
+	}
+
+}

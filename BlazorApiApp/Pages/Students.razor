@@ -1,0 +1,75 @@
+﻿
+@page "/students"
+@inject NavigationManager NavigationManager
+@inject IStudentService StudentService
+
+<PageTitle>Students</PageTitle>
+<h3>Students</h3>
+
+ <table class="table">
+     <thead>
+         <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Phone</th>
+            <th>Email</th>
+            <th>GPA</th>
+         </tr>
+     </thead>
+     <tbody>
+        @foreach(var student in StudentService.Students)
+        {
+            <tr>
+                <td>@student.Id</td>
+                <td>@student.Name</td>
+                <td>@student.Phone</td>
+                <td>@student.Email</td>
+                <td>@student.GPA</td>
+                <td>
+                    <button class="btn btn-primary"
+                    @onclick ="(()=>showStudents(student.Id))">
+                        <i class="oi oi-pencil"></i>
+                    </button>
+                </td>
+                <td>
+                    <button class="btn btn-danger"
+                    @onclick = "(()=>DeleteStudent(student.Id))">
+                    Delete
+                    </button>
+                </td>
+            </tr>
+        }
+        <button class="btn btn-success" @onclick="CreateStudent">Thêm sinh viên</button>
+    </tbody>
+
+ </table>
+
+
+
+@code{
+    protected override async Task OnInitializedAsync()
+    {
+        await StudentService.GetStudents();
+    }
+    private void showStudents(int id)
+    {
+        NavigationManager.NavigateTo($"/student/{id}");
+    }
+    private async Task DeleteStudent(int id)
+    {
+        if (id != null)
+        {
+            await StudentService.DeleteStudent(id);
+            await StudentService.GetStudents();
+
+        }
+    }
+    void CreateStudent()
+    {
+        NavigationManager.NavigateTo("/student");
+    }
+}
+
+
+
+
